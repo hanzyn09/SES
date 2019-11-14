@@ -6,17 +6,18 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.Font;
+import java.awt.Color;
 
 public class app {
 
 	private JFrame frame;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -30,9 +31,6 @@ public class app {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public app() {
 		initialize();
 	}
@@ -77,7 +75,7 @@ public class app {
 		Image ma = mar.getScaledInstance(130, 130, java.awt.Image.SCALE_SMOOTH);
 		ImageIcon m2 = new ImageIcon(ma);
 		JLabel lblNewLabel4 = new JLabel(m2);
-		lblNewLabel4.setBounds(790,80,130,130);
+		lblNewLabel4.setBounds(785,80,130,130);
 		welcomepanel.add(lblNewLabel4);
 		
 		ImageIcon jupiter = new ImageIcon(this.getClass().getResource("/jupiter.png"));
@@ -85,7 +83,7 @@ public class app {
 		Image jupit = jupite.getScaledInstance(160, 160, java.awt.Image.SCALE_SMOOTH);
 		ImageIcon j = new ImageIcon(jupit);
 		JLabel lblNewLabel5 = new JLabel(j);
-		lblNewLabel5.setBounds(1000,60,160,160);
+		lblNewLabel5.setBounds(1000,70,160,160);
 		welcomepanel.add(lblNewLabel5);
 		
 		ImageIcon saturn = new ImageIcon(this.getClass().getResource("/saturn.png"));
@@ -130,12 +128,95 @@ public class app {
 		JLabel space3 = new JLabel(s1);
 		space3.setBounds(10,490,150,150);
 		welcomepanel.add(space3);
+		
+		//inputbox(mercury~neptune)
+		JTextField text1 = new JTextField();
+		text1.setBounds(245,40,50,20);
+		welcomepanel.add(text1);
+		
+		JTextField text2 = new JTextField();
+		text2.setBounds(420,40,50,20);
+		welcomepanel.add(text2);
+		
+		JTextField text3 = new JTextField();
+		text3.setBounds(625,40,50,20);
+		welcomepanel.add(text3);
 
+		JTextField text4 = new JTextField();
+		text4.setBounds(830,40,50,20);
+		welcomepanel.add(text4);
+
+		JTextField text5 = new JTextField();
+		text5.setBounds(1055,35,50,20);
+		welcomepanel.add(text5);
+		
+		JTextField text6 = new JTextField();
+		text6.setBounds(1290,40,50,20);
+		welcomepanel.add(text6);
+		
+		JTextField text7 = new JTextField();
+		text7.setBounds(1490,40,50,20);
+		welcomepanel.add(text7);
+		
+		JTextField text8 = new JTextField();
+		text8.setBounds(1690,40,50,20);
+		welcomepanel.add(text8);
+		
+		
+		//name(mercury~neptune)
+		JButton button1 = new JButton("Mercury");
+		button1.setBackground(Color.ORANGE);
+		button1.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		button1.setBounds(220,180,100,30);
+		welcomepanel.add(button1);
+		
+		JButton button2 = new JButton("Venus");
+		button2.setBackground(Color.ORANGE);
+		button2.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		button2.setBounds(400,190,80,30);
+		welcomepanel.add(button2);
+		
+		JButton button3 = new JButton("Earth");
+		button3.setBackground(Color.ORANGE);
+		button3.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		button3.setBounds(611,209,80,30);
+		welcomepanel.add(button3);
+		
+		JButton button4 = new JButton("Mars");
+		button4.setBackground(Color.ORANGE);
+		button4.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		button4.setBounds(807,219,80,30);
+		welcomepanel.add(button4);
+		
+		JButton button5 = new JButton("Jupiter");
+		button5.setBackground(Color.ORANGE);
+		button5.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		button5.setBounds(1035,245,85,30);
+		welcomepanel.add(button5);
+		
+		JButton button6 = new JButton("Saturn");
+		button6.setBackground(Color.ORANGE);
+		button6.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		button6.setBounds(1280,219,85,30);
+		welcomepanel.add(button6);
+		
+		JButton button7 = new JButton("Uranus");
+		button7.setBackground(Color.ORANGE);
+		button7.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		button7.setBounds(1475,209,85,30);
+		welcomepanel.add(button7);
+		
+		JButton button8 = new JButton("Uranus");
+		button8.setBackground(Color.ORANGE);
+		button8.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		button8.setBounds(1675,222,85,30);
+		welcomepanel.add(button8);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
 
+//background image(space2.png)
 class ImagePanel extends JPanel{
 	private Image img;
 	public ImagePanel(Image img) {
