@@ -46,9 +46,10 @@ public class Background extends JPanel {
 
 		/***********************************Moving SES, stop position-> with beam************************/
 		for (int i=1 ; i<=4 ; i++) {
-			g.drawImage(SESControl.getses()[i].getImage(),SESControl.getses()[i].getcurX(),SESControl.getses()[i].getcurY(), tempY+50, tempY+50, this);
+			g.drawImage(SESControl.getses()[i].getImage(), SESControl.getses()[i].getcurX(),SESControl.getses()[i].getcurY(), tempY+50, tempY+50, this);
+			if(SESControl.getses()[i].getSESState().equals("Wait"))
+				g.drawImage(beam,SESControl.getses()[i].getcurX(),SESControl.getses()[i].getcurY(), tempY, tempY, this);
 		}
-		
 
 	}
 }
