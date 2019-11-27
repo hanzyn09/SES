@@ -136,7 +136,7 @@ public class SESControl extends JFrame implements ActionListener {
 		// If User(person) want to go up, tempState will be "DOWN".
 		else if (tempStopFloor - tempStartFloor < 0) { tempState = "DOWN"; }
 
-		for (int i=1 ; i<5 ; i++) {
+		for (int i=1 ; i<sesID.length ; i++) {
 
 				// If User state UP,
 				if ( tempState.equals("UP")) {
@@ -300,6 +300,7 @@ public class SESControl extends JFrame implements ActionListener {
 								ses[ID].setSESState("DOWN");
 							}
 						}
+						ses[ID].setSESFlag(true);
 						ses[ID].start();
 					}
 
