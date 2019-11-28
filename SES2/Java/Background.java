@@ -54,7 +54,7 @@ public class Background extends JPanel {
 		for (int i=3 ; i<=4 ; i++) {
 			g.drawImage(SESControl.getses()[i].getImage(), SESControl.getses()[i].getcurX(),SESControl.getses()[i].getcurY(), tempY+50, tempY+50, this);
 			if(SESControl.getses()[i].getSESState().equals("Wait")) {
-				g.drawImage(beam, SESControl.getses()[i].getcurX()+30,180, tempY, SESControl.getses()[i].getcurY()-80, this);
+				g.drawImage(beam, SESControl.getses()[i].getcurX()+20,180, tempY, SESControl.getses()[i].getcurY()-80, this);
 		}
 		}
 		
