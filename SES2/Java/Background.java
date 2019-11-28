@@ -1,4 +1,4 @@
-package Ele;
+package ses;
 
 import javax.swing.JPanel;
 import java.awt.Image;
@@ -50,6 +50,7 @@ public class Background extends JPanel {
 			if(SESControl.getses()[i].getSESState().equals("Wait"))
 				g.drawImage(beam,SESControl.getses()[i].getcurX(),SESControl.getses()[i].getcurY(), tempY, tempY, this);
 		}
+		
 
 	}
 }
