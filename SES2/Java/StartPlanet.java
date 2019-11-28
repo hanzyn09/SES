@@ -24,7 +24,7 @@ public class StartPlanet extends JPanel {
 		x = SESControl.Width / 11;
 		y = SESControl.Height / 5;
 		
-		StartButton = new JButton[9];	// Create 8 buttons for each floor.
+		StartButton = new JButton[9];	// Create 8 buttons for each Planet.
 		
 		for (int i=1 ; i<=8 ; i++) {
 			StartButton[i] = new JButton();
