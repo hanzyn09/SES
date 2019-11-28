@@ -1,5 +1,7 @@
 package ses;
-
+/*
+ * Control SES
+ */
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,116 +11,97 @@ import javax.swing.JFrame;
 
 
 public class SESControl extends JFrame implements ActionListener {
-
-	// define main windows size (it will assign all other windows and frame size)
 	public static int Width = 1760;
 	public static int Height = 900;
 
 	public static SES[] ses = null;
 
 
-	private boolean buttonOrder;
-
-	private static int tempStartFloor;
-	private static int tempStopFloor;
-
-	// Each Panel is added in this Frame.
-	private static Background drawWin;
-	private static StartPlanet aButton;
-	private static DestinationPlanet dButton;
+	private boolean request;
+	private static int startPlanet;
+	private static int DestPlanet;
+	private static Background background;
+	private static StartPlanet startBtn;
+	private static DestinationPlanet DestBtn;
 
 
 	public SESControl () {
 
+		/*************************Draw Fixed Background(SES, background, buttons)******************************/
 		this.setSize(Width, Height);
 		this.setTitle("SES");
 		this.setLayout(null);
 		this.setBackground(new Color(40,35,40));
 
-		tempStartFloor=0;
-		tempStopFloor=0;
-		buttonOrder = false;
+		background = new Background();
+		background.setSize(Width, Height);
+		this.add(background);
 
+		DestBtn = new DestinationPlanet ();
+		DestBtn.setLocation(Width/11 * 9+70 , ((Height / 15 * 2)/ 7)-14);
+		this.add(DestBtn);
 
-		// Create drawWindow and add in this Frame.
-		drawWin = new Background();
-		drawWin.setSize(Width, Height);
-		this.add(drawWin);
+		startBtn = new StartPlanet ();
+		startBtn.setLocation(0,0);
+		this.add(startBtn);
 
-		// Draw Destination Button In This Frame
-		dButton = new DestinationPlanet ();
-		dButton.setLocation(Width/11 * 9+70 , ((Height / 15 * 2)/ 7)-14);
-		this.add(dButton);
-
-		// Draw Arrival Button in this Frame
-		aButton = new StartPlanet ();
-		aButton.setLocation(0,0);
-		this.add(aButton);
-
-		// Set Arrival Button ActionCommand
 		for (int i=1 ; i<=8 ; i++) {
-			aButton.getStartButton()[i].setActionCommand("aBut"+i);	
-			aButton.getStartButton()[i].addActionListener(this);
+			startBtn.getStartButton()[i].setActionCommand("start"+i);	
+			startBtn.getStartButton()[i].addActionListener(this);
 		}
 
-		// Set Destination Button ActionCommand
 		for (int i=1 ; i<=8 ; i++) {
-			dButton.getDestinationButton()[i].setActionCommand("dBut"+i);	
-			dButton.getDestinationButton()[i].addActionListener(this);
+			DestBtn.getDestinationButton()[i].setActionCommand("dest"+i);	
+			DestBtn.getDestinationButton()[i].addActionListener(this);
 		}
 
-		
 		ses = new SES[5];
 		for (int i=1 ; i<5 ; i++) {
 			ses[i] = new SES(i);
 		}
-
 		for (int i=1 ; i<5 ; i++) {
-			ses[i].setDrawBackground(drawWin);
+			ses[i].setDrawBackground(background);
 		}
-
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+
+		startPlanet=0;
+		DestPlanet=0;
+		request = false;
 	}
 
 
-	public static synchronized Background getdrawWin () { return drawWin; }
-
-	public static  SES[] getses() { return ses; }
-
+	/************************************Set Request Planet***************************/
 	private synchronized void inputFloor (int ID) {	
-		if ( !SESControl.getses()[ID].getAllDestF().contains(tempStartFloor) ) {
-			SESControl.getses()[ID].setDestF(tempStartFloor);
+		if ( !SESControl.getses()[ID].getAllDestF().contains(startPlanet) ) {
+			SESControl.getses()[ID].setDestF(startPlanet);
 		}
-		if ( !SESControl.getses()[ID].getAllDestF().contains(tempStopFloor) ) {
-			SESControl.getses()[ID].setDestF(tempStopFloor);
+		if ( !SESControl.getses()[ID].getAllDestF().contains(DestPlanet) ) {
+			SESControl.getses()[ID].setDestF(DestPlanet);
 		}
 	}
 	
 	
-	private synchronized int searchSES () {
+	/*********************************Find the Nearest SES************************/
+	private synchronized int findSES () {
 
 		int tempID = 0;
 		String tempState = null;
-
 		int[] EVID = new int [5];
 		int[] EVcurrentFloor = new int [5];
 
-		// This loop is for get current floor of all elevators now.
 		for ( int i=1 ; i<5 ; i++) {
 			EVID[i] = i;
 			EVcurrentFloor[i] = ses[i].getcurF();
 		}
 
-		/*
-		 *	This loop sort elevator order by short distance from a person.
-		 *	Algorithm is based on 'Insertion Sorting Algorithm'.
-		 */
+		/*****************************find nearest ses*********************/
 		for (int i=2 ; i<ses.length ; i++) {
 			int rememberID = EVID[i];
 			int remember = EVcurrentFloor[i];
 
 			int j = i;
-			while (--j >= 1 && Math.abs(tempStartFloor - remember ) < Math.abs(tempStartFloor - EVcurrentFloor[j] ) ) {
+			while (--j >= 1 && Math.abs(startPlanet - remember ) < Math.abs(startPlanet - EVcurrentFloor[j] ) ) {
 				EVcurrentFloor[j+1] = EVcurrentFloor[j];
 				EVID[j+1] = EVID[j];
 			}
@@ -126,27 +109,18 @@ public class SESControl extends JFrame implements ActionListener {
 			EVcurrentFloor[j+1] = remember;
 		}
 
-		// If User(person) want to go up, tempState will be "UP".
-		if (tempStopFloor - tempStartFloor > 0) { tempState = "UP"; }
-		// If User(person) want to go up, tempState will be "DOWN".
-		else if (tempStopFloor - tempStartFloor < 0) { tempState = "DOWN"; }
+		if (DestPlanet - startPlanet > 0) { tempState = "Right"; }
+		else if (DestPlanet - startPlanet < 0) { tempState = "LEFT"; }
 
+
+		/****************************If a request comes in while moving, same direction-> Accept the request****************/
 		for (int i=1 ; i<EVID.length ; i++) {
-
-				// If User state UP,
-				if ( tempState.equals("UP")) {
-
-					// 留뚯빟 �뿕�젅踰좎씠�꽣�쓽 �긽�깭媛� UP�씤 寃쎌슦
-					// If Elevator state UP,
-					if ( ses[EVID[i]].getSESState().equals("UP")) {
-
-						// �뿕�젅踰좎씠�꽣媛� �궡 諛묒뿉�꽌 �삱�씪�삤怨� �엳�뒗 寃쎌슦
-						// If Elevator going up at the under floor of User's floor,
-						if ( ses[EVID[i]].getcurF() < tempStartFloor ) {
-
-							// �뿕�젅踰좎씠�꽣�쓽 �룄李⑹링�씠 �궡 異쒕컻痢�, �룄李⑹링蹂대떎 �넂��寃쎌슦
-							// If Stop floor of Elevator is more high than User's start floor and stop floor,
-							if ( ses[EVID[i]].getDestF() >= tempStartFloor ) {
+			/*************if Request is moving Right****************/
+				if ( tempState.equals("Right")) {
+					/************SES is Moving right || Moving LEFT || Moving Default Right || Stop********************/
+					if ( ses[EVID[i]].getSESState().equals("Right")) {
+						if ( ses[EVID[i]].getcurF() < startPlanet ) {
+							if ( ses[EVID[i]].getDestF() >= startPlanet ) {
 								tempID = EVID[i];
 								inputFloor(tempID);
 								Collections.sort(SESControl.getses()[tempID].getAllDestF());
@@ -155,28 +129,24 @@ public class SESControl extends JFrame implements ActionListener {
 
 						}
 					}
-					else if ( ses[EVID[i]].getSESState().equals("DOWN") ) {
+					else if ( ses[EVID[i]].getSESState().equals("LEFT") ) {
 
 						if ( ses[EVID[i]].getAllDestF().size() == 1) {
-							// If this visit floor equals to floor User's in or different + or - only 1 floor, 
-							if ( ses[EVID[i]].getDestF() - tempStartFloor == 0 || Math.abs( ses[EVID[i]].getDestF() - tempStartFloor) == 1 ) {
+							if ( ses[EVID[i]].getDestF() - startPlanet == 0 || Math.abs( ses[EVID[i]].getDestF() - startPlanet) == 1 ) {
 								tempID = EVID[i];
 								inputFloor(tempID);
 								break;
 							}
 						}
 					}
-					// If Elevator State DEFAULTUP,
-					else if ( ses[EVID[i]].getSESState().equals("DEFAULTUP") ) {
-						// If Elevator going up at the under floor of User's floor,
-						if ( ses[EVID[i]].getcurF() < tempStartFloor ) {
+					else if ( ses[EVID[i]].getSESState().equals("DEFAULTRight") ) {
+						if ( ses[EVID[i]].getcurF() < startPlanet ) {
 							tempID = EVID[i];
 							inputFloor(tempID);
 							Collections.sort(SESControl.getses()[tempID].getAllDestF());
 							break;
 						}
 					}
-					// If Elevator State STOP,
 					else if ( ses[EVID[i]].getSESState().equals("STOP") ) {
 						tempID = EVID[i];
 						inputFloor(tempID);
@@ -184,14 +154,15 @@ public class SESControl extends JFrame implements ActionListener {
 						break;
 					}
 				}
-				// If User state DOWN,
-				else if ( tempState.equals("DOWN")) {
-					// If Elevator State DOWN,
-					if ( ses[EVID[i]].getSESState().equals("DOWN") ) {
-						// IF Elevator going down at top of User's floor.
-						if ( ses[EVID[i]].getcurF() > tempStartFloor ) {
-							// If stop floor of Elevator is more bottom fo User's start floor and stop floor,
-							if ( ses[EVID[i]].getDestF() <= tempStartFloor ) {
+				
+
+				/*************if Request is moving LEFT****************/
+				else if ( tempState.equals("LEFT")) 
+
+					/*************SES is Moving LEFT || Moving RIGHT || Moving Default LEFT || STOP********************/
+					if ( ses[EVID[i]].getSESState().equals("LEFT") ) {
+						if ( ses[EVID[i]].getcurF() > startPlanet ) {
+							if ( ses[EVID[i]].getDestF() <= startPlanet ) {
 								tempID = EVID[i];
 								inputFloor(tempID);
 								Collections.sort(SESControl.getses()[tempID].getAllDestF());
@@ -200,24 +171,18 @@ public class SESControl extends JFrame implements ActionListener {
 							}
 						}
 					}
-					// If Elevator state UP,
-					else if ( ses[EVID[i]].getSESState().equals("UP") ) {
-
-						// If Stop floor of Elevator is last visit floor,
+					else if ( ses[EVID[i]].getSESState().equals("Right") ) {
 						if ( ses[EVID[i]].getAllDestF().size() == 1) {
 
-							if ( ses[EVID[i]].getDestF() - tempStartFloor == 0 || Math.abs( ses[EVID[i]].getDestF() - tempStartFloor) == 1 ) {
+							if ( ses[EVID[i]].getDestF() - startPlanet == 0 || Math.abs( ses[EVID[i]].getDestF() - startPlanet) == 1 ) {
 								tempID = EVID[i];
 								inputFloor(tempID);
 								break;
 							}
 						}
 					}
-					// If Elevator state DEFAULTDOWN,
-					else if ( ses[EVID[i]].getSESState().equals("DEFAULTDOWN") ) {
-
-						// If Elevator is going down at the bottom of User's floor,
-						if ( ses[EVID[i]].getcurF() > tempStartFloor ) {
+					else if ( ses[EVID[i]].getSESState().equals("DEFAULTLEFT") ) {
+						if ( ses[EVID[i]].getcurF() > startPlanet ) {
 							tempID = EVID[i];
 							inputFloor(tempID);
 							Collections.sort(SESControl.getses()[tempID].getAllDestF());
@@ -236,70 +201,66 @@ public class SESControl extends JFrame implements ActionListener {
 					}
 				}
 			
-		}
+		
 		return tempID;
 	}
 	
 	
-
-
-	
-	
+	/*************************When Request is True, Action*************************/
 	
 	public void actionPerformed (ActionEvent e) {
 
-		if (e.getActionCommand().substring(0,1).equals("a") ) {
-			tempStartFloor=0;
-
-			buttonOrder = true;	// If Start button is clicked before Stop button is clicked, buttonOrder = true.
+		if (e.getActionCommand().substring(0,1).equals("s") ) {
+			startPlanet=0;
+			request = true;	
 			for (int i=1 ; i<=8 ; i++) {
-				if (e.getActionCommand().equals("aBut"+i)) {
-					tempStartFloor = i;
+				if (e.getActionCommand().equals("start"+i)) {
+					startPlanet = i;
 					break;
 				}
 			}
 		}
 		else if ( e.getActionCommand().substring(0,1).equals("d") ) {
-			tempStopFloor=0;
-
-			// If When stop button is clicked before start button is clicked, it cannot executed.
-			if (buttonOrder) {
+			DestPlanet=0;
+			if (request) {
 				for (int i=1 ; i<=8 ; i++) {	
-					if (e.getActionCommand().equals("dBut"+i)) {
+					if (e.getActionCommand().equals("dest"+i)) {
 	
-							tempStopFloor = i;
+							DestPlanet = i;
 							break;	
 	
 					}
 				}
-				// If start floor and stop floor is same, it cannot be executed.
-				if ( tempStartFloor - tempStopFloor != 0) {	
+				if ( startPlanet - DestPlanet != 0) {	
 
-					int ID = searchSES ();
-
-					// start elsesator thread when it didn't have choose before,
+					int ID = findSES ();
 					if (ses[ID].getSESFlag() == false ) {
-						if ( tempStartFloor - ses[ID].getcurF() > 0 ) { 
-							ses[ID].setSESState("UP");
+						if ( startPlanet - ses[ID].getcurF() > 0 ) { 
+							ses[ID].setSESState("Right");
 						}
-						else if (tempStartFloor - ses[ID].getcurF() < 0) {
-							ses[ID].setSESState("DOWN");
+						else if (startPlanet - ses[ID].getcurF() < 0) {
+							ses[ID].setSESState("LEFT");
 						}
 						else {
-							if ( tempStopFloor - ses[ID].getcurF() > 0 ) {
-								ses[ID].setSESState("UP");
+							if ( DestPlanet - ses[ID].getcurF() > 0 ) {
+								ses[ID].setSESState("Right");
 							}
-							else if ( tempStopFloor - ses[ID].getcurF() < 0  ) {
-								ses[ID].setSESState("DOWN");
+							else if ( DestPlanet - ses[ID].getcurF() < 0  ) {
+								ses[ID].setSESState("LEFT");
 							}
 						}
 						ses[ID].setSESFlag(true);
 						ses[ID].start();
 					}
 
-					buttonOrder = false;
+					request = false;
 				}
 			}
 		} 
 	}
+	
+
+
+	public static synchronized Background getbackground () { return background; }
+	public static  SES[] getses() { return ses; }
 }
