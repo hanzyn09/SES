@@ -164,6 +164,7 @@ public class SES extends Thread {
            
             /*****************************wait on start Planet************************/
             this.waitPlanet();
+            this.setSESState("Stop");
             DestF.remove(0);
          }
          
