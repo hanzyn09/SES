@@ -11,7 +11,7 @@ public class SES extends Thread {
 
    private int id;              // SES ID
    private Image img;           // Images for SES Elevator
-   private String SESState;     // UP, DOWN, 1->UP, 8->DOWN, STOP
+   private String SESState;     // RIGHT, LEFT, 1->RIGHT, 8->LEFT, STOP
    private int firstF;
    private int curF;
 
@@ -133,7 +133,7 @@ public class SES extends Thread {
         	 
         	 /*****************************when SES is Down(go left)**********************/
             if (this.getcurF() - this.getDestF() > 0) {
-               this.setSESState("DOWN");
+               this.setSESState("LEFT");
 
                for ( int i = this.getcurX() ; i >= this.getF()[0][this.getDestF()] ; i--) {
                   this.setcurX(i);
@@ -151,7 +151,7 @@ public class SES extends Thread {
             /*****************************when SES is Up(go right)**********************/
             else if (this.getcurF() - this.getDestF() < 0) {
 
-               this.setSESState("UP");
+               this.setSESState("RIGHT");
                for (int i = this.getcurX() ; i <= this.getF()[0][this.getDestF()] ; i++) {
                   this.setcurX(i);
                   drawBackground.repaint();
@@ -177,7 +177,7 @@ public class SES extends Thread {
 
         	 /**************************Down to 1 floor************************/
             if (this.getcurF() - this.getfirstF() > 0) {
-               this.setSESState("DEFAULTDOWN");
+               this.setSESState("DEFAULTLEFT");
 
                for ( stopplanet = this.getcurX() ; stopplanet >= this.getF()[0][this.getfirstF()] ; stopplanet--) {
                   if ( this.getAllDestF().isEmpty() ) {
@@ -202,7 +202,7 @@ public class SES extends Thread {
             /**********************************************Go UP*******************************************/
             else if (this.getcurF() - this.getfirstF() < 0) {
 
-               this.setSESState("DEFAULTUP");
+               this.setSESState("DEFAULTRIGHT");
                
                for (stopplanet = this.getcurX() ; stopplanet <= this.getF()[0][this.getfirstF()] ; stopplanet++) {
 
