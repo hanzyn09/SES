@@ -1,5 +1,7 @@
 package ses;
-
+/*
+ * Draw SES, Run Threads
+ */
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.ArrayList;
@@ -95,7 +97,7 @@ public class SES extends Thread {
    private void waitPlanet() {
       // Open the door.
       for (int i=0 ; i<5 ; i++) {
-         setcurBeamY(this.getF()[1][this.getcurF()]);
+         setcurBeamY(this.getF()[1][6]);
          this.setSESState("Wait");
          drawBackground.repaint();
          try {
@@ -106,9 +108,10 @@ public class SES extends Thread {
       }
       // Close the door
       for (int i=4 ; i>=0 ; i--) {
-          setcurBeamY(this.getF()[1][this.getcurF()]);
+          setcurBeamY(this.getF()[1][6]);
           this.setSESState("Wait");
-          drawBackground.repaint();
+        	  drawBackground.repaint();
+        	  
          try {
             Thread.sleep(100);
          } catch (InterruptedException e) {
@@ -245,7 +248,7 @@ public class SES extends Thread {
    public synchronized void setcurX (int X) { curX = X; }
 
    public synchronized void setcurY (int Y) { curY = Y; }
-   
+      
    public synchronized void setcurBeamY (int BeamY) { curBeamY = BeamY; }
 
    public void setSESFlag (boolean flag) { SESFlag = flag; }
