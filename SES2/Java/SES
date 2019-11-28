@@ -1,4 +1,4 @@
-package Ele;
+package ses;
 
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class SES extends Thread {
 
 
-   private int id;                // SES ID
-   private Image img;             // Images for SES Elevator
+   private int id;              // SES ID
+   private Image img;           // Images for SES Elevator
    private String SESState;     // UP, DOWN, 1->UP, 8->DOWN, STOP
    private int firstF;
    private int curF;
@@ -80,7 +80,7 @@ public class SES extends Thread {
       }
    }
    
-  
+  /****************************************Update currentFloor***********************************************/
    private void updatecurF () {
       for (int i=1 ; i<=10 ; i++) {
          if (this.getcurX() == this.getF()[0][i]) {
@@ -191,11 +191,10 @@ public class SES extends Thread {
                      break;
                   }   
                }
-               if (stopplanet == this.getF()[0][this.getfirstF()]+1) {
                   this.setSESState("STOP");
-               }
                stopplanet=0;
             }
+            
             /**********************************************Go UP*******************************************/
             else if (this.getcurF() - this.getfirstF() < 0) {
 
@@ -220,9 +219,8 @@ public class SES extends Thread {
                      break;
                   }
                }
-               if (stopplanet == this.getF()[0][this.getfirstF()]-1) {
                   this.setSESState("STOP");
-               }
+             
                stopplanet=0;
             }
          }
