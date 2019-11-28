@@ -1,4 +1,4 @@
-package Ele;
+package ses;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -26,7 +26,8 @@ public class DestinationPlanet extends JPanel {
 		this.setSize(SESControl.Width - (x * 9 + 5) - 20, ButtonHeight); 
 		this.setBackground(new Color(40,35,40));
 
-		// Create 8 buttons for each floor.
+		
+		/********************************Image of Destination Planet1~8 Button**************************************/
 		DestinationButton = new JButton[9];
 
 		for (int i=1 ; i<=8 ; i++) {
@@ -38,7 +39,8 @@ public class DestinationPlanet extends JPanel {
 			DestinationButton[i].setBackground(new Color(40,35,40));
 			
 		}
-		
+
+		/********************************Location of Destination Planet1~8 Button**************************************/
 		for (int i=1 ; i<=8 ; i++) {
 			if (i<=4) {
 				DestinationButton[i].setBounds(80, (4-i)*80, 70, 70);
@@ -52,6 +54,5 @@ public class DestinationPlanet extends JPanel {
 	}
 
 	public static int getPanelHeight () { return ButtonHeight; }
-
 	public JButton[] getDestinationButton () { return DestinationButton; }
 }
