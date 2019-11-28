@@ -1,4 +1,4 @@
-package Ele;
+package ses;
 
 import java.awt.Color;
 import java.awt.Image;
