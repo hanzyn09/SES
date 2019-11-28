@@ -1,4 +1,4 @@
-package Ele;
+package ses;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -81,9 +81,6 @@ public class SESControl extends JFrame implements ActionListener {
 	}
 
 
-	
-
-
 	public static synchronized Background getdrawWin () { return drawWin; }
 
 	public static  SES[] getses() { return ses; }
@@ -97,38 +94,36 @@ public class SESControl extends JFrame implements ActionListener {
 		}
 	}
 	
-
-	
 	
 	private synchronized int searchSES () {
 
 		int tempID = 0;
 		String tempState = null;
 
-		int[] sesID = new int [5];
-		int[] sescurrentFloor = new int [5];
+		int[] EVID = new int [5];
+		int[] EVcurrentFloor = new int [5];
 
-		// This loop is for get current floor of all elsesators now.
+		// This loop is for get current floor of all elevators now.
 		for ( int i=1 ; i<5 ; i++) {
-			sesID[i] = i;
-			sescurrentFloor[i] = ses[i].getcurF();
+			EVID[i] = i;
+			EVcurrentFloor[i] = ses[i].getcurF();
 		}
 
 		/*
-		 *	This loop sort elsesator order by short distance from a person.
+		 *	This loop sort elevator order by short distance from a person.
 		 *	Algorithm is based on 'Insertion Sorting Algorithm'.
 		 */
 		for (int i=2 ; i<ses.length ; i++) {
-			int rememberID = sesID[i];
-			int remember = sescurrentFloor[i];
+			int rememberID = EVID[i];
+			int remember = EVcurrentFloor[i];
 
 			int j = i;
-			while (--j >= 1 && Math.abs(tempStartFloor - remember ) < Math.abs(tempStartFloor - sescurrentFloor[j] ) ) {
-				sescurrentFloor[j+1] = sescurrentFloor[j];
-				sesID[j+1] = sesID[j];
+			while (--j >= 1 && Math.abs(tempStartFloor - remember ) < Math.abs(tempStartFloor - EVcurrentFloor[j] ) ) {
+				EVcurrentFloor[j+1] = EVcurrentFloor[j];
+				EVID[j+1] = EVID[j];
 			}
-			sesID[j+1] = rememberID;
-			sescurrentFloor[j+1] = remember;
+			EVID[j+1] = rememberID;
+			EVcurrentFloor[j+1] = remember;
 		}
 
 		// If User(person) want to go up, tempState will be "UP".
@@ -136,20 +131,23 @@ public class SESControl extends JFrame implements ActionListener {
 		// If User(person) want to go up, tempState will be "DOWN".
 		else if (tempStopFloor - tempStartFloor < 0) { tempState = "DOWN"; }
 
-		for (int i=1 ; i<sesID.length ; i++) {
+		for (int i=1 ; i<EVID.length ; i++) {
 
 				// If User state UP,
 				if ( tempState.equals("UP")) {
 
-					// If Elsesator state UP,
-					if ( ses[sesID[i]].getSESState().equals("UP")) {
+					// 留뚯빟 �뿕�젅踰좎씠�꽣�쓽 �긽�깭媛� UP�씤 寃쎌슦
+					// If Elevator state UP,
+					if ( ses[EVID[i]].getSESState().equals("UP")) {
 
-						// If Elsesator going up at the under floor of User's floor,
-						if ( ses[sesID[i]].getcurF() < tempStartFloor ) {
+						// �뿕�젅踰좎씠�꽣媛� �궡 諛묒뿉�꽌 �삱�씪�삤怨� �엳�뒗 寃쎌슦
+						// If Elevator going up at the under floor of User's floor,
+						if ( ses[EVID[i]].getcurF() < tempStartFloor ) {
 
-							// If Stop floor of Elsesator is more high than User's start floor and stop floor,
-							if ( ses[sesID[i]].getDestF() >= tempStartFloor ) {
-								tempID = sesID[i];
+							// �뿕�젅踰좎씠�꽣�쓽 �룄李⑹링�씠 �궡 異쒕컻痢�, �룄李⑹링蹂대떎 �넂��寃쎌슦
+							// If Stop floor of Elevator is more high than User's start floor and stop floor,
+							if ( ses[EVID[i]].getDestF() >= tempStartFloor ) {
+								tempID = EVID[i];
 								inputFloor(tempID);
 								Collections.sort(SESControl.getses()[tempID].getAllDestF());
 								break;
@@ -157,34 +155,30 @@ public class SESControl extends JFrame implements ActionListener {
 
 						}
 					}
-					// If Elsesator state DOWN,
-					else if ( ses[sesID[i]].getSESState().equals("DOWN") ) {
+					else if ( ses[EVID[i]].getSESState().equals("DOWN") ) {
 
-						// If Stop floor of Elsesator is last visit floor,
-						if ( ses[sesID[i]].getAllDestF().size() == 1) {
-
+						if ( ses[EVID[i]].getAllDestF().size() == 1) {
 							// If this visit floor equals to floor User's in or different + or - only 1 floor, 
-							if ( ses[sesID[i]].getDestF() - tempStartFloor == 0 || Math.abs( ses[sesID[i]].getDestF() - tempStartFloor) == 1 ) {
-								tempID = sesID[i];
+							if ( ses[EVID[i]].getDestF() - tempStartFloor == 0 || Math.abs( ses[EVID[i]].getDestF() - tempStartFloor) == 1 ) {
+								tempID = EVID[i];
 								inputFloor(tempID);
 								break;
 							}
 						}
 					}
-					// If Elsesator State DEFAULTUP,
-					else if ( ses[sesID[i]].getSESState().equals("DEFAULTUP") ) {
-
-						// If Elsesator going up at the under floor of User's floor,
-						if ( ses[sesID[i]].getcurF() < tempStartFloor ) {
-							tempID = sesID[i];
+					// If Elevator State DEFAULTUP,
+					else if ( ses[EVID[i]].getSESState().equals("DEFAULTUP") ) {
+						// If Elevator going up at the under floor of User's floor,
+						if ( ses[EVID[i]].getcurF() < tempStartFloor ) {
+							tempID = EVID[i];
 							inputFloor(tempID);
 							Collections.sort(SESControl.getses()[tempID].getAllDestF());
 							break;
 						}
 					}
-					// If Elsesator State STOP,
-					else if ( ses[sesID[i]].getSESState().equals("STOP") ) {
-						tempID = sesID[i];
+					// If Elevator State STOP,
+					else if ( ses[EVID[i]].getSESState().equals("STOP") ) {
+						tempID = EVID[i];
 						inputFloor(tempID);
 						Collections.sort(SESControl.getses()[tempID].getAllDestF());
 						break;
@@ -192,16 +186,13 @@ public class SESControl extends JFrame implements ActionListener {
 				}
 				// If User state DOWN,
 				else if ( tempState.equals("DOWN")) {
-
-					// If Elsesator State DOWN,
-					if ( ses[sesID[i]].getSESState().equals("DOWN") ) {
-
-						// IF Elsesator going down at top of User's floor.
-						if ( ses[sesID[i]].getcurF() > tempStartFloor ) {
-
-							// If stop floor of Elsesator is more bottom fo User's start floor and stop floor,
-							if ( ses[sesID[i]].getDestF() <= tempStartFloor ) {
-								tempID = sesID[i];
+					// If Elevator State DOWN,
+					if ( ses[EVID[i]].getSESState().equals("DOWN") ) {
+						// IF Elevator going down at top of User's floor.
+						if ( ses[EVID[i]].getcurF() > tempStartFloor ) {
+							// If stop floor of Elevator is more bottom fo User's start floor and stop floor,
+							if ( ses[EVID[i]].getDestF() <= tempStartFloor ) {
+								tempID = EVID[i];
 								inputFloor(tempID);
 								Collections.sort(SESControl.getses()[tempID].getAllDestF());
 								Collections.reverse(SESControl.getses()[tempID].getAllDestF());
@@ -209,24 +200,25 @@ public class SESControl extends JFrame implements ActionListener {
 							}
 						}
 					}
-					// If Elsesator state UP,
-					else if ( ses[sesID[i]].getSESState().equals("UP") ) {
+					// If Elevator state UP,
+					else if ( ses[EVID[i]].getSESState().equals("UP") ) {
 
-						// If Stop floor of Elsesator is last visit floor,
-						if ( ses[sesID[i]].getAllDestF().size() == 1) {
+						// If Stop floor of Elevator is last visit floor,
+						if ( ses[EVID[i]].getAllDestF().size() == 1) {
 
-							if ( ses[sesID[i]].getDestF() - tempStartFloor == 0 || Math.abs( ses[sesID[i]].getDestF() - tempStartFloor) == 1 ) {
-								tempID = sesID[i];
+							if ( ses[EVID[i]].getDestF() - tempStartFloor == 0 || Math.abs( ses[EVID[i]].getDestF() - tempStartFloor) == 1 ) {
+								tempID = EVID[i];
 								inputFloor(tempID);
 								break;
 							}
 						}
 					}
-						// If Elsesator state DEFAULTDOWN,
-					else if ( ses[sesID[i]].getSESState().equals("DEFAULTDOWN") ) {
-						// If Elsesator is going down at the bottom of User's floor,
-						if ( ses[sesID[i]].getcurF() > tempStartFloor ) {
-							tempID = sesID[i];
+					// If Elevator state DEFAULTDOWN,
+					else if ( ses[EVID[i]].getSESState().equals("DEFAULTDOWN") ) {
+
+						// If Elevator is going down at the bottom of User's floor,
+						if ( ses[EVID[i]].getcurF() > tempStartFloor ) {
+							tempID = EVID[i];
 							inputFloor(tempID);
 							Collections.sort(SESControl.getses()[tempID].getAllDestF());
 							Collections.reverse(SESControl.getses()[tempID].getAllDestF());
@@ -234,15 +226,16 @@ public class SESControl extends JFrame implements ActionListener {
 
 						}
 					}
-					// If Elsesator state STOP,
-					else if ( ses[sesID[i]].getSESState().equals("STOP") ) {
-						tempID = sesID[i];
+					// If Elevator state STOP,
+					else if ( ses[EVID[i]].getSESState().equals("STOP") ) {
+						tempID = EVID[i];
 						inputFloor(tempID);
 						Collections.sort(SESControl.getses()[tempID].getAllDestF());
 						Collections.reverse(SESControl.getses()[tempID].getAllDestF());
 						break;
 					}
 				}
+			
 		}
 		return tempID;
 	}
